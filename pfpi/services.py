@@ -149,9 +149,9 @@ class CreditCardService(WebService):
         return is_valid
 
 
-class Payment(WebService):
+class TokenPaymentService(WebService):
     """
-    Class to do payments
+    Class to do payments using Token
     """
     token = CharField(label='token')
     amount = FloatField(label='amount')
@@ -170,7 +170,55 @@ class Payment(WebService):
         """
         self.type.value = Constant.TRANSACTION_TOKEN_TYPE
         self.amount.value = amount if amount else 0.00
-        super(Payment, self).__init__(
+        super(TokenPaymentService, self).__init__(
             commerce=commerce, firstname=firstname, lastname=lastname, email=email, description=description,
             type=self.type.value, production_mode=production_mode)
         self.token.value = token
+
+
+class PaymentService(WebService):
+    """
+    Class to do payments
+    """
+    amount = FloatField(label='amount')
+    cc_number = CharField(label='cc_number', pattern=Constant.CREDIT_CARD_NUMBER_AVAILABLE_PATTERN)
+    ccv2 = CharField(label='ccv2', pattern=Constant.CCV2_AVAILABLE_PATTERN)
+    cc_expiration = CharField(label='cc_expiration', pattern=Constant.EXPIRATION_DATE_AVAILABLE_PATTERN)
+
+    def __init__(
+            self, commerce, firstname, lastname, email, description, amount, cc_number, ccv2, cc_expiration,
+            production_mode=False):
+        """
+        Instance of Payment Class
+        :param commerce:
+        :param firstname:
+        :param lastname:
+        :param email:
+        :param description:
+        :param amount:
+        :param cc_number:
+        :param ccv2:
+        :param cc_expiration:
+        :param production_mode:
+        """
+        self.type.value = Constant.TRANSACTION_TOKEN_TYPE
+        self.amount.value = amount if amount else 0.00
+        super(PaymentService, self).__init__(
+            commerce=commerce, firstname=firstname, lastname=lastname, email=email, description=description,
+            type=self.type.value, production_mode=production_mode)
+        self.cc_number.value = cc_number
+        self.ccv2.value = ccv2
+        self.cc_expiration.value = cc_expiration
+
+    def valid(self):
+        is_valid = super(PaymentService, self).valid()
+        if self.cc_expiration.value:
+            cc_expiration = Utils.get_date_obj(date_str=self.cc_expiration.value, format='%Y-%m')
+            if cc_expiration:
+                last_day = Utils.get_last_day(month=cc_expiration.month, year=cc_expiration.year)
+                if last_day > 0:
+                    date_str = '{0}-{1}'.format(self.cc_expiration.value, last_day)
+                    date_obj = Utils.get_date_obj(date_str=date_str, format='%Y-%m-%d')
+                    if Utils.get_current_date() > date_obj:
+                        raise PfigAttributeError(Messages.CREDIT_CARD_EXPIRED)
+        return is_valid
