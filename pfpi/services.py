@@ -95,13 +95,14 @@ class WebService(object):
         call web services from Páguelo Fácil payment gateways.
         :return: response given from the web services called
         """
-        endpoint = Constant.PRODUCTION_ENDPOINT if self.production_mode.value else Constant.DEVELOPMENT_ENDPOINT
-        try:
-            request = urllib2.Request(url=endpoint, data=self.to_url)
-            response = urllib2.urlopen(request)
-            return json.loads(response.read())
-        except Exception as e:
-            raise PfigTransactionError(e)
+        if self.is_valid():
+            endpoint = Constant.PRODUCTION_ENDPOINT if self.production_mode.value else Constant.DEVELOPMENT_ENDPOINT
+            try:
+                request = urllib2.Request(url=endpoint, data=self.to_url)
+                response = urllib2.urlopen(request)
+                return json.loads(response.read())
+            except Exception as e:
+                raise PfigTransactionError(e)
 
 
 class CreditCardService(WebService):
