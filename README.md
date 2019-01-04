@@ -64,4 +64,5 @@ This module is based on the follow documentation [link](https://pfserver.net/plu
 
 ## Releases notes:
 
-- 1.0.0: Services added to add credit cards and do payments
+- 1.0.0: Services added to add credit cards and do payments.
+- 1.0.1: Applying Validations before to call api services.
