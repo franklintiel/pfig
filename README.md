@@ -19,8 +19,7 @@ cc = CreditCardService(
     commerce=commerce_key, firstname='first name', lastname='last name', email='example@domain.com',
     description='payment description', cc_number='4111111111111111', ccv2='123', cc_expiration='2019-12',
     production_mode=production_mode)
-# Add new credit card
-result = cc.call()
+result = cc.call() # Add new credit card
 print result # return a JSON object with the result
 ```
 
@@ -33,8 +32,7 @@ p = PaymentService(
     commerce=commerce_key, firstname='first name', lastname='last name', email='example@domain.com',
     description='payment description', amount=25.00, cc_number='4111111111111111', ccv2='123',
     cc_expiration='2019-12', production_mode=production_mode)
-# Do Payment
-result = p.call()
+result = p.call() # Do Payment
 print result # return a JSON object with the result
 ```
 
@@ -47,14 +45,12 @@ cc = CreditCardService(
     commerce=commerce_key, firstname='first name', lastname='last name', email='example@domain.com',
     description='payment description', cc_number='4111111111111111', ccv2='123', cc_expiration='2019-12',
     production_mode=production_mode)
-# Add new credit card
-result = cc.call()
+result = cc.call() # get the credit card token
 token = result['token']
 p = TokenPaymentService(
     commerce=commerce_key, firstname='first name', lastname='last name', email='example@domain.com',
     description='payment description', amount=25.00, token=token, production_mode=production_mode)
-# Do Payment
-result = p.call()
+result = p.call() # Do Payment
 print result # return a JSON object with the result
 ```
 
@@ -64,7 +60,7 @@ $ pip uninstall pfpi
 ```
 
 ## Additional Info
-You can see the follow [link](https://pfserver.net/plugins/api-transacciones/)
+This module is based on the follow documentation [link](https://pfserver.net/plugins/api-transacciones/)
 
 ## Releases notes:
 
